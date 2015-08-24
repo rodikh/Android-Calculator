@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="android:Theme.Material.Light">
+        <item name="android:colorPrimary">@color/chegg_main</item>
+        <item name="android:colorPrimaryDark">#92d</item>
+        <item name="android:colorAccent">#aed</item>
     </style>
+
+    <style name="materialActionBar" parent="android:Theme.Material.Light">
+        <item name="android:background">@color/chegg_main</item>
+    </style>
+
 </resources>

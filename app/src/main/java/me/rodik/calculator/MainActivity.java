@@ -1,7 +1,6 @@
 package me.rodik.calculator;
 
 import android.app.Activity;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,8 +15,8 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MyActivity";
 
-    public Integer current_sum = 0;
-    public Integer previous_sum = 0;
+    public Long current_sum = (long) 0;
+    public Long previous_sum = (long) 0;
     private TextView screen;
     private String last_action = "num";
     private String current_modifier = "";
@@ -29,7 +28,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         renderCalculator();
         screen = (TextView) findViewById(R.id.screen);
-        screen.setText(current_sum.toString());
     }
 
     @Override
@@ -55,23 +53,21 @@ public class MainActivity extends Activity {
     }
 
     private void renderCalculator() {
-        LinearLayout pad = (LinearLayout) findViewById(R.id.calc_pad);
+        LinearLayout calculatorLayout = (LinearLayout) findViewById(R.id.calculator);
         for (int i = 0; i < 3; i++) {
             Log.d("MainActivity", "Creating pad line");
-            LinearLayout line = new LinearLayout(this);
+            LinearLayout line = (LinearLayout) calculatorLayout.getChildAt(i+1);
             line.setOrientation(LinearLayout.HORIZONTAL);
-            for (int j = 1; j < 4; j++) {
-                createNumberButton(Integer.toString(i * 3 + j), line);
+            for (int j = 3; j > 0; j--) {
+                createNumberButton(Long.toString(i * 3 + j), line);
             }
-            pad.addView(line);
         }
 
         Log.d("MainActivity", "Creating pad line");
-        LinearLayout line = new LinearLayout(this);
+        LinearLayout line = (LinearLayout) calculatorLayout.getChildAt(4);
         line.setOrientation(LinearLayout.HORIZONTAL);
-        createNumberButton(Integer.toString(0), line);
+        createNumberButton(Long.toString(0), line);
 
-        pad.addView(line);
 
     }
 
@@ -80,10 +76,10 @@ public class MainActivity extends Activity {
         button.setText(text);
         TableRow.LayoutParams params = new TableRow.LayoutParams(
                 0,
-                TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                TableRow.LayoutParams.MATCH_PARENT, 1f);
         button.setLayoutParams(params);
         button.setOnClickListener(buttonClickListener);
-        line.addView(button);
+        line.addView(button,0);
     }
 
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
@@ -96,10 +92,10 @@ public class MainActivity extends Activity {
 
             if (last_action.equals("num")) {
                 current_sum *= 10;
-                current_sum += Integer.valueOf(value);
+                current_sum += Long.valueOf(value);
             } else {
                 previous_sum = current_sum;
-                current_sum = Integer.valueOf(value);
+                current_sum = Long.valueOf(value);
             }
             screen.setText(current_sum.toString());
             last_action = "num";
@@ -122,7 +118,9 @@ public class MainActivity extends Activity {
                 current_sum = previous_sum * current_sum;
                 break;
             case "/":
-                current_sum = previous_sum / current_sum;
+                if (current_sum != 0) {
+                    current_sum = previous_sum / current_sum;
+                }
                 break;
             default:
                 break;
